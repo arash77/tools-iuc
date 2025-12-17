@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galaxy Tool Request Form</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #3498db;
+      --accent-hover: #2980b9;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333;
+      --border: #ddd;
+      --success: #27ae60;
+      --error: #e74c3c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header img {
+      height: 60px;
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      color: var(--primary);
+      font-size: 1.75rem;
+      margin: 0 0 0.5rem;
+    }
+
+    header p {
+      color: #666;
+      margin: 0;
+    }
+
+    .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--border);
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    .progress-step {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #999;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s;
+    }
+
+    .progress-step.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .progress-step.completed {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .form-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin: 0 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    label .required {
+      color: var(--error);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+    }
+
+    input.error,
+    textarea.error,
+    select.error {
+      border-color: var(--error);
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .radio-option input[type="radio"] {
+      width: auto;
+      cursor: pointer;
+    }
+
+    .other-input {
+      margin-left: 1.5rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    .other-input.visible {
+      display: block;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #e9ecef;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #219a52;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .help-text {
+      font-size: 0.875rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+
+    .review-section {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .review-section h4 {
+      margin: 0 0 0.75rem;
+      color: var(--primary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .review-item {
+      display: flex;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+    }
+
+    .review-label {
+      font-weight: 500;
+      min-width: 140px;
+      color: #666;
+    }
+
+    .review-value {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: #999;
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .form-card {
+        padding: 1.5rem;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .review-item {
+        flex-direction: column;
+      }
+
+      .review-label {
+        margin-bottom: 0.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="https://galaxyproject.org/images/galaxy-logos/galaxy_project_logo_square.png" alt="Galaxy Project">
+      <h1>Galaxy Tool Request Form</h1>
+      <p>Request a new tool for the Galaxy platform</p>
+    </header>
+
+    <div class="progress-bar">
+      <div class="progress-step active" data-step="1">1</div>
+      <div class="progress-step" data-step="2">2</div>
+      <div class="progress-step" data-step="3">3</div>
+      <div class="progress-step" data-step="4">4</div>
+    </div>
+
+    <form id="toolRequestForm" class="form-card">
+      <!-- Step 1: Requester Information -->
+      <div class="step active" data-step="1">
+        <h2 class="step-title">Requester Information</h2>
+
+        <div class="form-group">
+          <label for="requesterName">Name <span class="required">*</span></label>
+          <input type="text" id="requesterName" name="requesterName" autocomplete="name" required>
+          <div class="error-message">Please enter your name</div>
+        </div>
+
+        <div class="form-group">
+          <label for="requesterEmail">Email <span class="required">*</span></label>
+          <input type="email" id="requesterEmail" name="requesterEmail" autocomplete="email" required>
+          <div class="help-text">For follow-up if details are missing</div>
+          <div class="error-message">Please enter a valid email address</div>
+        </div>
+
+        <div class="form-group">
+          <label for="affiliation">Affiliation / Lab</label>
+          <input type="text" id="affiliation" name="affiliation" autocomplete="organization">
+        </div>
+
+        <div class="form-group">
+          <label for="galaxyServer">Galaxy server you use</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="galaxyServer" value="usegalaxy.org"> usegalaxy.org
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="galaxyServer" value="usegalaxy.eu"> usegalaxy.eu
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="galaxyServer" value="usegalaxy.org.au"> usegalaxy.org.au
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="galaxyServer" value="other"> Other
+            </label>
+          </div>
+          <input type="text" id="galaxyServerOther" class="other-input" placeholder="Specify server URL">
+        </div>
+
+        <div class="btn-group">
+          <div></div>
+          <button type="button" class="btn btn-primary" onclick="nextStep()">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Tool Details -->
+      <div class="step" data-step="2">
+        <h2 class="step-title">Tool Details</h2>
+
+        <div class="form-group">
+          <label for="toolName">Tool Name <span class="required">*</span></label>
+          <input type="text" id="toolName" name="toolName" required>
+          <div class="error-message">Please enter the tool name</div>
+        </div>
+
+        <div class="form-group">
+          <label for="toolUrl">Tool URL <span class="required">*</span></label>
+          <input type="url" id="toolUrl" name="toolUrl" placeholder="https://github.com/..." required>
+          <div class="help-text">Link to existing repository, publication, or documentation</div>
+          <div class="error-message">Please enter a valid URL</div>
+        </div>
+
+        <div class="form-group">
+          <label for="toolDescription">Short description of the tool <span class="required">*</span></label>
+          <textarea id="toolDescription" name="toolDescription" required></textarea>
+          <div class="error-message">Please provide a description</div>
+        </div>
+
+        <div class="form-group">
+          <label for="useCase">Scientific use case or workflow</label>
+          <textarea id="useCase" name="useCase" placeholder="Describe how you plan to use this tool..."></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">← Back</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep()">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Contribution -->
+      <div class="step" data-step="3">
+        <h2 class="step-title">Contribution</h2>
+
+        <div class="form-group">
+          <label>Would you be interested in wrapping the tool with assistance?</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="wrapTool" value="No" checked> No
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="wrapTool" value="Yes"> Yes, I'd like to contribute
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" id="githubUsernameGroup" style="display: none;">
+          <label for="githubUsername">GitHub Username</label>
+          <input type="text" id="githubUsername" name="githubUsername" autocomplete="username" placeholder="your-username">
+          <div class="help-text">We'll reach out to help you get started</div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">← Back</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep()">Review →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Submit -->
+      <div class="step" data-step="4">
+        <h2 class="step-title">Review & Submit</h2>
+
+        <div class="review-section">
+          <h4>Requester Information</h4>
+          <div class="review-item">
+            <span class="review-label">Name:</span>
+            <span class="review-value" id="reviewName"></span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Email:</span>
+            <span class="review-value" id="reviewEmail"></span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Affiliation:</span>
+            <span class="review-value" id="reviewAffiliation"></span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Galaxy Server:</span>
+            <span class="review-value" id="reviewServer"></span>
+          </div>
+        </div>
+
+        <div class="review-section">
+          <h4>Tool Details</h4>
+          <div class="review-item">
+            <span class="review-label">Tool Name:</span>
+            <span class="review-value" id="reviewToolName"></span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">URL:</span>
+            <span class="review-value" id="reviewToolUrl"></span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Description:</span>
+            <span class="review-value" id="reviewDescription"></span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Use Case:</span>
+            <span class="review-value" id="reviewUseCase"></span>
+          </div>
+        </div>
+
+        <div class="review-section">
+          <h4>Contribution</h4>
+          <div class="review-item">
+            <span class="review-label">Willing to wrap:</span>
+            <span class="review-value" id="reviewWrapTool"></span>
+          </div>
+          <div class="review-item" id="reviewGithubRow" style="display: none;">
+            <span class="review-label">GitHub:</span>
+            <span class="review-value" id="reviewGithub"></span>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">← Back</button>
+          <button type="button" class="btn btn-success" onclick="submitForm()">Submit Request →</button>
+        </div>
+      </div>
+    </form>
+
+    <footer>
+      <p>Powered by <a href="https://galaxyproject.org" target="_blank">Galaxy Project</a> · <a href="https://github.com/galaxyproject/tools-iuc" target="_blank">Tools IUC</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // Configuration - Update this to your repository
+    const GITHUB_REPO = 'galaxyproject/tools-iuc';
+    const ISSUE_LABEL = 'tool request';
+
+    let currentStep = 1;
+    const totalSteps = 4;
+
+    // Show/hide GitHub username field based on wrap tool selection
+    document.querySelectorAll('input[name="wrapTool"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        document.getElementById('githubUsernameGroup').style.display = 
+          e.target.value === 'Yes' ? 'block' : 'none';
+      });
+    });
+
+    // Show/hide other server input
+    document.querySelectorAll('input[name="galaxyServer"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const otherInput = document.getElementById('galaxyServerOther');
+        if (e.target.value === 'other') {
+          otherInput.classList.add('visible');
+          otherInput.focus();
+        } else {
+          otherInput.classList.remove('visible');
+          otherInput.value = '';
+        }
+      });
+    });
+
+    function validateStep(step) {
+      const stepEl = document.querySelector(`.step[data-step="${step}"]`);
+      const requiredFields = stepEl.querySelectorAll('[required]');
+      let valid = true;
+
+      requiredFields.forEach(field => {
+        const errorMsg = field.parentElement.querySelector('.error-message');
+        
+        if (!field.value.trim()) {
+          field.classList.add('error');
+          if (errorMsg) errorMsg.style.display = 'block';
+          valid = false;
+        } else if (field.type === 'email' && !isValidEmail(field.value)) {
+          field.classList.add('error');
+          if (errorMsg) errorMsg.style.display = 'block';
+          valid = false;
+        } else if (field.type === 'url' && !isValidUrl(field.value)) {
+          field.classList.add('error');
+          if (errorMsg) errorMsg.style.display = 'block';
+          valid = false;
+        } else {
+          field.classList.remove('error');
+          if (errorMsg) errorMsg.style.display = 'none';
+        }
+      });
+
+      return valid;
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function isValidUrl(url) {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function updateProgressBar() {
+      document.querySelectorAll('.progress-step').forEach(step => {
+        const stepNum = parseInt(step.dataset.step);
+        step.classList.remove('active', 'completed');
+        
+        if (stepNum === currentStep) {
+          step.classList.add('active');
+        } else if (stepNum < currentStep) {
+          step.classList.add('completed');
+          step.innerHTML = '✓';
+        } else {
+          step.innerHTML = stepNum;
+        }
+      });
+    }
+
+    function showStep(step) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.querySelector(`.step[data-step="${step}"]`).classList.add('active');
+      updateProgressBar();
+    }
+
+    function nextStep() {
+      if (!validateStep(currentStep)) return;
+      
+      if (currentStep < totalSteps) {
+        currentStep++;
+        showStep(currentStep);
+        
+        if (currentStep === 4) {
+          populateReview();
+        }
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    }
+
+    function getGalaxyServer() {
+      const selected = document.querySelector('input[name="galaxyServer"]:checked');
+      if (!selected) return '';
+      if (selected.value === 'other') {
+        return document.getElementById('galaxyServerOther').value || 'Other';
+      }
+      return selected.value;
+    }
+
+    function populateReview() {
+      document.getElementById('reviewName').textContent = document.getElementById('requesterName').value;
+      document.getElementById('reviewEmail').textContent = document.getElementById('requesterEmail').value;
+      document.getElementById('reviewAffiliation').textContent = document.getElementById('affiliation').value || '—';
+      document.getElementById('reviewServer').textContent = getGalaxyServer() || '—';
+      document.getElementById('reviewToolName').textContent = document.getElementById('toolName').value;
+      document.getElementById('reviewToolUrl').textContent = document.getElementById('toolUrl').value;
+      document.getElementById('reviewDescription').textContent = document.getElementById('toolDescription').value;
+      document.getElementById('reviewUseCase').textContent = document.getElementById('useCase').value || '—';
+      
+      const wrapTool = document.querySelector('input[name="wrapTool"]:checked').value;
+      document.getElementById('reviewWrapTool').textContent = wrapTool;
+      
+      const githubUsername = document.getElementById('githubUsername').value;
+      if (wrapTool === 'Yes' && githubUsername) {
+        document.getElementById('reviewGithubRow').style.display = 'flex';
+        document.getElementById('reviewGithub').textContent = '@' + githubUsername;
+      } else {
+        document.getElementById('reviewGithubRow').style.display = 'none';
+      }
+    }
+
+    function submitForm() {
+      const toolName = document.getElementById('toolName').value;
+      const toolUrl = document.getElementById('toolUrl').value;
+      const toolDescription = document.getElementById('toolDescription').value;
+      const useCase = document.getElementById('useCase').value;
+      const requesterName = document.getElementById('requesterName').value;
+      const requesterEmail = document.getElementById('requesterEmail').value;
+      const affiliation = document.getElementById('affiliation').value;
+      const galaxyServer = getGalaxyServer();
+      const wrapTool = document.querySelector('input[name="wrapTool"]:checked').value;
+      const githubUsername = document.getElementById('githubUsername').value;
+
+      // Build issue title
+      const title = `[Tool Request] ${toolName}`;
+
+      // Build issue body using sections (not tables) to handle multi-line content
+      let body = `## Tool Information
+
+**Tool Name:** ${toolName}
+
+**Tool URL:** ${toolUrl}
+
+**Description:**
+${toolDescription}
+`;
+
+      if (useCase) {
+        body += `
+**Scientific Use Case:**
+${useCase}
+`;
+      }
+
+      body += `
+## Requester Information
+
+**Name:** ${requesterName}
+
+**Email:** ${requesterEmail}
+`;
+
+      if (affiliation) {
+        body += `
+**Affiliation:** ${affiliation}
+`;
+      }
+
+      if (galaxyServer) {
+        body += `
+**Galaxy Server:** ${galaxyServer}
+`;
+      }
+
+      body += `
+## Contribution
+
+**Willing to wrap tool:** ${wrapTool}
+`;
+
+      if (wrapTool === 'Yes' && githubUsername) {
+        body += `
+**GitHub Username:** @${githubUsername}
+`;
+      }
+
+      body += `
+---
+*Submitted via [Tool Request Form](https://galaxyproject.github.io/tools-iuc/tool-request/)*
+`;
+
+      // Create GitHub issue URL with pre-filled content
+      const issueUrl = `https://github.com/${GITHUB_REPO}/issues/new?` + new URLSearchParams({
+        title: title,
+        body: body,
+        labels: ISSUE_LABEL
+      }).toString();
+
+      // Open GitHub issue page
+      window.open(issueUrl, '_blank');
+    }
+
+    // Clear error state on input
+    document.querySelectorAll('input, textarea').forEach(field => {
+      field.addEventListener('input', () => {
+        field.classList.remove('error');
+        const errorMsg = field.parentElement.querySelector('.error-message');
+        if (errorMsg) errorMsg.style.display = 'none';
+      });
+    });
+  </script>
+</body>
+</html>
