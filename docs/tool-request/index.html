@@ -1,20 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galaxy Tool Request Form</title>
+  <title>Galaxy Tool Request Form - IUC</title>
   <style>
-    :root {
-      --primary: #2c3e50;
-      --accent: #3498db;
-      --accent-hover: #2980b9;
-      --bg: #f8f9fa;
+    :root,
+    [data-theme="light"] {
+      --primary: #2c3143;
+      --accent: #2c8ece;
+      --accent-hover: #1e6fa8;
+      --accent-light: rgba(44, 142, 206, 0.1);
+      --bg: #f5f6f8;
       --card-bg: #ffffff;
-      --text: #333;
-      --border: #ddd;
+      --text: #3d4144;
+      --border: #e1e4e8;
       --success: #27ae60;
+      --success-hover: #1e8449;
       --error: #e74c3c;
+      --help-text: #6c757d;
+      --review-label: #6c757d;
+      --footer-text: #9ca3af;
+      --shadow: 0 2px 8px rgba(44, 49, 67, 0.08);
+      --shadow-lg: 0 8px 24px rgba(44, 49, 67, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --primary: #f5f6f8;
+      --accent: #4a9fd8;
+      --accent-hover: #6bb3e0;
+      --accent-light: rgba(74, 159, 216, 0.15);
+      --bg: #1a1d29;
+      --card-bg: #2c3143;
+      --text: #e8eaed;
+      --border: #3d4254;
+      --success: #2ecc71;
+      --success-hover: #58d68d;
+      --error: #e74c3c;
+      --help-text: #9ca3af;
+      --review-label: #9ca3af;
+      --footer-text: #6c757d;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 
     * {
@@ -34,7 +61,41 @@
       max-width: 680px;
       margin: 0 auto;
       padding: 2rem 1rem;
+      position: relative;
     }
+
+    .theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      transition: all 0.2s;
+      font-size: 1.25rem;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .theme-toggle .icon-sun,
+    .theme-toggle .icon-moon,
+    .theme-toggle .icon-auto {
+      display: none;
+    }
+
+    [data-theme="light"] .theme-toggle .icon-sun { display: block; }
+    [data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+    [data-theme="auto"] .theme-toggle .icon-auto { display: block; }
 
     header {
       text-align: center;
@@ -42,18 +103,18 @@
     }
 
     header img {
-      height: 60px;
+      height: 80px;
       margin-bottom: 1rem;
     }
 
     header h1 {
       color: var(--primary);
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       margin: 0 0 0.5rem;
     }
 
     header p {
-      color: #666;
+      color: var(--help-text);
       margin: 0;
     }
 
@@ -86,7 +147,7 @@
       align-items: center;
       justify-content: center;
       font-weight: 600;
-      color: #999;
+      color: var(--footer-text);
       position: relative;
       z-index: 1;
       transition: all 0.3s;
@@ -105,10 +166,11 @@
 
     .form-card {
       background: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
       padding: 2rem;
       margin-bottom: 1rem;
+      border: 1px solid var(--border);
     }
 
     .step {
@@ -158,7 +220,14 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 1rem;
+      background: var(--card-bg);
+      color: var(--text);
       transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--help-text);
     }
 
     input:focus,
@@ -239,25 +308,31 @@
     }
 
     .btn-secondary:hover {
-      background: #e9ecef;
+      background: var(--border);
     }
 
     .btn-primary {
       background: var(--accent);
       color: white;
+      box-shadow: 0 2px 4px rgba(44, 142, 206, 0.3);
     }
 
     .btn-primary:hover {
       background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(44, 142, 206, 0.4);
     }
 
     .btn-success {
       background: var(--success);
       color: white;
+      box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
     }
 
     .btn-success:hover {
-      background: #219a52;
+      background: var(--success-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(39, 174, 96, 0.4);
     }
 
     .btn:disabled {
@@ -267,23 +342,25 @@
 
     .help-text {
       font-size: 0.875rem;
-      color: #666;
+      color: var(--help-text);
       margin-top: 0.25rem;
     }
 
     .review-section {
       background: var(--bg);
-      border-radius: 8px;
-      padding: 1rem;
+      border-radius: 12px;
+      padding: 1.25rem;
       margin-bottom: 1rem;
+      border: 1px solid var(--border);
     }
 
     .review-section h4 {
       margin: 0 0 0.75rem;
-      color: var(--primary);
-      font-size: 0.9rem;
+      color: var(--accent);
+      font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-weight: 600;
     }
 
     .review-item {
@@ -299,7 +376,7 @@
     .review-label {
       font-weight: 500;
       min-width: 140px;
-      color: #666;
+      color: var(--review-label);
     }
 
     .review-value {
@@ -310,7 +387,7 @@
     footer {
       text-align: center;
       padding: 1rem;
-      color: #999;
+      color: var(--footer-text);
       font-size: 0.875rem;
     }
 
@@ -352,9 +429,15 @@
 </head>
 <body>
   <div class="container">
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+      <span class="icon-sun">☀️</span>
+      <span class="icon-moon">🌙</span>
+      <span class="icon-auto">🌗</span>
+    </button>
+
     <header>
-      <img src="https://galaxyproject.org/images/galaxy-logos/galaxy_project_logo_square.png" alt="Galaxy Project">
-      <h1>Galaxy Tool Request Form</h1>
+      <img src="https://galaxyproject.org/images/galaxy-logos/iuc-logo-trans.png" alt="Intergalactic Utilities Commission">
+      <h1>IUC Tool Request Form</h1>
       <p>Request a new tool for the Galaxy platform</p>
     </header>
 
@@ -544,6 +627,79 @@
   </div>
 
   <script>
+    // Theme management
+    const themeToggle = document.getElementById('themeToggle');
+    const themes = ['auto', 'light', 'dark'];
+    
+    function getSystemTheme() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function applyTheme(theme) {
+      if (theme === 'auto') {
+        const systemTheme = getSystemTheme();
+        document.documentElement.setAttribute('data-theme', 'auto');
+        // Apply actual colors based on system
+        document.documentElement.style.setProperty('--primary', getComputedStyle(document.documentElement).getPropertyValue('--primary'));
+        // Re-trigger by setting a class
+        document.body.className = systemTheme;
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.className = theme;
+      }
+      localStorage.setItem('theme', theme);
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('theme') || 'auto';
+      if (saved === 'auto') {
+        document.documentElement.setAttribute('data-theme', getSystemTheme());
+      } else {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+      // Store what mode we're in for toggle cycling
+      document.documentElement.dataset.themePreference = saved;
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.dataset.themePreference || 'auto';
+      const nextIndex = (themes.indexOf(current) + 1) % themes.length;
+      const next = themes[nextIndex];
+      document.documentElement.dataset.themePreference = next;
+      
+      if (next === 'auto') {
+        document.documentElement.setAttribute('data-theme', getSystemTheme());
+      } else {
+        document.documentElement.setAttribute('data-theme', next);
+      }
+      localStorage.setItem('theme', next);
+      
+      // Update button display
+      updateThemeIcon(next);
+    });
+
+    function updateThemeIcon(theme) {
+      document.querySelectorAll('.theme-toggle span').forEach(span => span.style.display = 'none');
+      if (theme === 'light') {
+        document.querySelector('.icon-sun').style.display = 'block';
+      } else if (theme === 'dark') {
+        document.querySelector('.icon-moon').style.display = 'block';
+      } else {
+        document.querySelector('.icon-auto').style.display = 'block';
+      }
+    }
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if ((document.documentElement.dataset.themePreference || 'auto') === 'auto') {
+        document.documentElement.setAttribute('data-theme', getSystemTheme());
+      }
+    });
+
+    // Initialize theme
+    initTheme();
+    updateThemeIcon(localStorage.getItem('theme') || 'auto');
+
     // Configuration
     const GITHUB_REPO = 'arash77/tools-iuc';
     const ISSUE_LABEL = 'tool request';
