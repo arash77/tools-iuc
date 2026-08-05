@@ -453,8 +453,13 @@ jobs:
     if: ${{ always() && github.ref != 'refs/heads/master' && github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
+    # setup is checked explicitly: if it fails every downstream job is skipped,
+    # and the 'skipped' escape in each guard below would report the run green.
+    - name: Check setup status
+      if: ${{ needs.setup.result != 'success' }}
+      run: exit 1
     - name: Check tool lint status
-      if: ${{ needs.lint.result != 'success' && needs.flake8.result != 'skipped' }}
+      if: ${{ needs.lint.result != 'success' && needs.lint.result != 'skipped' }}
       run: exit 1
     - name: Indicate Python script lint status
       if: ${{ needs.flake8.result != 'success' && needs.flake8.result != 'skipped' }}
