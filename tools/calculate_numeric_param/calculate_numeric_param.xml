@@ -130,5 +130,7 @@ This tool calculates an output (integer or float) parameter
 from integer and float input parameters and specified simple
 arithmetic operations (addition, subtraction, multiplication,
 division, exponentiation, and modulus).
+
+See https://this-host-does-not-exist-ci-label-test.invalid/docs for details.
     ]]></help>
 </tool>
